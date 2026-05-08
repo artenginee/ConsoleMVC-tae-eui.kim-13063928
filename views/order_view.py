@@ -33,7 +33,7 @@ class OrderView:
             choice = input("선택: ").strip()
 
             if   choice == "1": self._oc.create(input("시료 ID: "), input("고객명: "), int(input("수량: ")))
-            elif choice == "2": self._sc.get_all()
+            elif choice == "2": self._sc.find_all()
             elif choice == "0": break
 
     def _monitoring_menu(self):
@@ -47,8 +47,8 @@ class OrderView:
             if   choice == "1":
                 for status in [OrderStatus.RESERVED, OrderStatus.PRODUCING,
                                OrderStatus.CONFIRMED, OrderStatus.RELEASE]:
-                    self._oc.get_by_status(status)
-            elif choice == "2": self._sc.get_all()
+                    self._oc.find_by_status(status)
+            elif choice == "2": self._sc.find_all()
             elif choice == "0": break
 
     def _release_menu(self):
@@ -59,6 +59,6 @@ class OrderView:
             print("0. 뒤로")
             choice = input("선택: ").strip()
 
-            if   choice == "1": self._oc.get_by_status(OrderStatus.CONFIRMED)
+            if   choice == "1": self._oc.find_by_status(OrderStatus.CONFIRMED)
             elif choice == "2": self._oc.update_status(input("주문 ID: "), OrderStatus.RELEASE)
             elif choice == "0": break

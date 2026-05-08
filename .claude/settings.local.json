@@ -13,7 +13,10 @@
       "Bash(git push *)",
       "Bash(python -m unittest tests.test_models -v)",
       "Bash(python -m unittest tests.test_controllers.TestInterfaces -v)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }

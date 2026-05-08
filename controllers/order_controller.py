@@ -24,17 +24,17 @@ class OrderController(IOrderController):
         self._counter += 1
         return order
 
-    def get_all(self) -> list[Order]:
+    def find_all(self) -> list[Order]:
         return list(self._orders)
 
-    def get_by_id(self, order_id: str) -> Order | None:
+    def find_by_id(self, order_id: str) -> Order | None:
         return next((o for o in self._orders if o.order_id == order_id), None)
 
-    def get_by_status(self, status: OrderStatus) -> list[Order]:
+    def find_by_status(self, status: OrderStatus) -> list[Order]:
         return [o for o in self._orders if o.status == status]
 
     def update_status(self, order_id: str, new_status: OrderStatus) -> bool:
-        order = self.get_by_id(order_id)
+        order = self.find_by_id(order_id)
         if not order:
             return False
         order.status = new_status

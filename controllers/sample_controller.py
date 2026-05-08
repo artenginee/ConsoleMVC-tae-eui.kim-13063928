@@ -8,31 +8,31 @@ class SampleController(ISampleController):
         self._samples: list[Sample] = []
         self._counter = 1
 
-    def add(self, name: str, avg_production_time: float,
-            yield_rate: float, initial_inventory: int = 0) -> Sample:
+    def create(self, name: str, avg_production_time: float,
+               yield_rate: float, initial_stock: int = 0) -> Sample:
         sample = Sample(
             sample_id=f"S{self._counter:03d}",
             name=name,
             avg_production_time=avg_production_time,
             yield_rate=yield_rate,
-            inventory=initial_inventory,
+            stock=initial_stock,
         )
         self._samples.append(sample)
         self._counter += 1
         return sample
 
-    def get_all(self) -> list[Sample]:
+    def find_all(self) -> list[Sample]:
         return list(self._samples)
 
-    def get_by_id(self, sample_id: str) -> Sample | None:
+    def find_by_id(self, sample_id: str) -> Sample | None:
         return next((s for s in self._samples if s.sample_id == sample_id), None)
 
-    def search_by_name(self, keyword: str) -> list[Sample]:
+    def find_by_name(self, keyword: str) -> list[Sample]:
         return [s for s in self._samples if keyword.lower() in s.name.lower()]
 
     def update(self, sample_id: str, name: str,
                avg_production_time: float, yield_rate: float) -> bool:
-        sample = self.get_by_id(sample_id)
+        sample = self.find_by_id(sample_id)
         if not sample:
             return False
         sample.name = name
@@ -41,22 +41,18 @@ class SampleController(ISampleController):
         return True
 
     def delete(self, sample_id: str) -> bool:
-        sample = self.get_by_id(sample_id)
+        sample = self.find_by_id(sample_id)
         if not sample:
             return False
         self._samples.remove(sample)
         return True
 
-    def add_inventory(self, sample_id: str, qty: int) -> bool:
-        sample = self.get_by_id(sample_id)
+    def update_stock(self, sample_id: str, delta: int) -> bool:
+        """delta 양수: 재고 증가 / 음수: 재고 차감"""
+        sample = self.find_by_id(sample_id)
         if not sample:
             return False
-        sample.inventory += qty
-        return True
-
-    def deduct_inventory(self, sample_id: str, qty: int) -> bool:
-        sample = self.get_by_id(sample_id)
-        if not sample or sample.inventory < qty:
+        if sample.stock + delta < 0:
             return False
-        sample.inventory -= qty
+        sample.stock += delta
         return True

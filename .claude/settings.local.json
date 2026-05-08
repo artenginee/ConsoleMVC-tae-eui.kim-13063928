@@ -12,7 +12,8 @@
       "Bash(git branch *)",
       "Bash(git push *)",
       "Bash(python -m unittest tests.test_models -v)",
-      "Bash(python -m unittest tests.test_controllers.TestInterfaces -v)"
+      "Bash(python -m unittest tests.test_controllers.TestInterfaces -v)",
+      "Bash(git rm *)"
     ]
   }
 }

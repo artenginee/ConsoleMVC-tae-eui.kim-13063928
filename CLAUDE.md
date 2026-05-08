@@ -20,54 +20,26 @@ python main.py
 
 ## MVC 아키텍처
 
-세 레이어는 단방향으로만 의존한다: `View → Controller → Model`
+레이어 간 의존 방향: `View → Controller → Model`
 
 **Model** (`models/`) — 순수 데이터 클래스(`@dataclass`). 로직 없음.
 - `OrderStatus` Enum: `RESERVED → PRODUCING / CONFIRMED → RELEASE` (거절 시 `REJECTED`)
-- `Sample`: 시료 (avg_production_time, yield_rate, inventory 보유)
+- `Sample`: 시료 (avg_production_time, yield_rate, inventory)
 - `Order`: 주문 (sample_id 참조, status 필드로 상태 추적)
 - `ProductionJob`: 생산 작업 (shortfall, actual_production_qty, total_production_time)
 
-**Controller** (`controllers/`) — 비즈니스 로직 + in-memory 저장소. View를 import하지 않는다.
-- `SampleController`: 시료 CRUD, 재고 증감(`add_inventory` / `deduct_inventory`)
-- `OrderController`: 주문 생성·상태 변경, 상태별 조회
-- `ProductionController`: FIFO 큐(`deque`), `enqueue` 시 자동으로 첫 작업 시작
+**Controller** (`controllers/`) — 메서드 시그니처만 정의된 스켈레톤. 구현부는 `pass`. View를 import하지 않는다.
+- `SampleController`: 시료 CRUD + 재고 증감 인터페이스
+- `OrderController`: 주문 생성·상태 변경·상태별 조회 인터페이스
+- `ProductionController`: 생산 큐(`deque`) 등록·조회·완료 인터페이스
 
-**View** (`views/`) — `print` / `input` 담당. 비즈니스 판단 없이 Controller만 호출.
-- `MainView`: 역할 선택(생산담당자 / 주문담당자)
+**View** (`views/`) — `print` / `input` 담당. Controller 메서드를 호출하는 것 외에 판단 로직 없음.
+- `MainView`: 역할 선택 (생산담당자 / 주문담당자)
 - `ProductionView`: 생산담당자 전체 화면 (시료 관리, 승인/거절, 생산 라인)
 - `OrderView`: 주문담당자 전체 화면 (주문 예약, 모니터링, 출고)
 
 `main.py`에서 세 Controller를 생성한 뒤 생성자 주입으로 View에 전달한다.
 
-## 핵심 비즈니스 규칙
+## POC-2 확장 가이드
 
-**주문 승인 분기** (`ProductionView._approve_order`):
-- 재고 충분(`inventory >= quantity`) → 재고 차감 후 즉시 `CONFIRMED`
-- 재고 부족 → `shortfall = quantity - inventory` 계산, `ProductionController.enqueue` 호출 후 `PRODUCING`
-
-**실 생산량 공식** (`ProductionController.enqueue`):
-```
-actual_qty = ceil(shortfall / (yield_rate × 0.9))
-total_time = avg_production_time × actual_qty
-```
-
-**생산 완료 시 재고 반영** (`ProductionView._complete_job`):
-```
-good_units = int(actual_production_qty × yield_rate)
-inventory += good_units      # 양품 입고
-inventory -= order.quantity  # 주문 수량 출고
-order.status = CONFIRMED
-```
-
-## 데이터 ID 규칙
-
-| 엔티티 | 형식 | 예시 |
-|---|---|---|
-| Sample | `S{counter:03d}` | `S001` |
-| Order | `O{counter:04d}` | `O0001` |
-| ProductionJob | `J{counter:04d}` | `J0001` |
-
-## POC-2 확장 시 유의사항
-
-영속성 레이어를 추가할 때 Controller의 in-memory 리스트(`self._samples`, `self._orders`, `self._queue`)를 Repository 객체로 교체하면 된다. View와 비즈니스 로직은 변경 불필요.
+Controller의 `pass` 메서드에 구현을 채우고, `self._samples` / `self._orders` / `self._queue` 를 Repository 객체로 교체하면 된다. View와 Model은 변경 불필요.

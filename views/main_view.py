@@ -1,6 +1,6 @@
-from controllers.order_controller import OrderController
-from controllers.production_controller import ProductionController
-from controllers.sample_controller import SampleController
+from interfaces.i_order_controller import IOrderController
+from interfaces.i_production_controller import IProductionController
+from interfaces.i_sample_controller import ISampleController
 from views.order_view import OrderView
 from views.production_view import ProductionView
 
@@ -8,9 +8,9 @@ from views.production_view import ProductionView
 class MainView:
     """역할 선택 메인 메뉴"""
 
-    def __init__(self, sample_ctrl: SampleController,
-                 order_ctrl: OrderController,
-                 prod_ctrl: ProductionController):
+    def __init__(self, sample_ctrl: ISampleController,
+                 order_ctrl: IOrderController,
+                 prod_ctrl: IProductionController):
         self._prod_view  = ProductionView(sample_ctrl, order_ctrl, prod_ctrl)
         self._order_view = OrderView(sample_ctrl, order_ctrl)
 

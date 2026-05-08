@@ -1,8 +1,10 @@
 from collections import deque
+
+from interfaces.i_production_controller import IProductionController
 from models.production_job import ProductionJob
 
 
-class ProductionController:
+class ProductionController(IProductionController):
 
     def __init__(self):
         self._queue: deque[ProductionJob] = deque()

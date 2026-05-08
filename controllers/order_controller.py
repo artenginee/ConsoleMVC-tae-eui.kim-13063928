@@ -1,8 +1,9 @@
+from interfaces.i_order_controller import IOrderController
 from models.order import Order
 from models.order_status import OrderStatus
 
 
-class OrderController:
+class OrderController(IOrderController):
 
     def __init__(self):
         self._orders: list[Order] = []

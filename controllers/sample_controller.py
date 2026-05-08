@@ -1,7 +1,8 @@
+from interfaces.i_sample_controller import ISampleController
 from models.sample import Sample
 
 
-class SampleController:
+class SampleController(ISampleController):
 
     def __init__(self):
         self._samples: list[Sample] = []

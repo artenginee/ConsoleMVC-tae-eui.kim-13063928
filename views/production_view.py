@@ -1,15 +1,15 @@
-from controllers.order_controller import OrderController
-from controllers.production_controller import ProductionController
-from controllers.sample_controller import SampleController
+from interfaces.i_order_controller import IOrderController
+from interfaces.i_production_controller import IProductionController
+from interfaces.i_sample_controller import ISampleController
 from models.order_status import OrderStatus
 
 
 class ProductionView:
     """생산담당자 화면: 시료 관리 / 주문 승인·거절 / 생산 라인"""
 
-    def __init__(self, sample_ctrl: SampleController,
-                 order_ctrl: OrderController,
-                 prod_ctrl: ProductionController):
+    def __init__(self, sample_ctrl: ISampleController,
+                 order_ctrl: IOrderController,
+                 prod_ctrl: IProductionController):
         self._sc = sample_ctrl
         self._oc = order_ctrl
         self._pc = prod_ctrl
@@ -27,8 +27,6 @@ class ProductionView:
             elif choice == "2": self._approval_menu()
             elif choice == "3": self._production_menu()
             elif choice == "0": break
-
-    # ── 1. 시료 관리 ───────────────────────────────────────────────────
 
     def _sample_menu(self):
         while True:
@@ -48,8 +46,6 @@ class ProductionView:
             elif choice == "5": self._sc.delete(input("시료 ID: "))
             elif choice == "0": break
 
-    # ── 2. 주문 승인 / 거절 ────────────────────────────────────────────
-
     def _approval_menu(self):
         while True:
             print("\n[ 주문 승인 / 거절 ]")
@@ -63,8 +59,6 @@ class ProductionView:
             elif choice == "2": self._oc.update_status(input("주문 ID: "), OrderStatus.CONFIRMED)
             elif choice == "3": self._oc.update_status(input("주문 ID: "), OrderStatus.REJECTED)
             elif choice == "0": break
-
-    # ── 3. 생산 라인 ───────────────────────────────────────────────────
 
     def _production_menu(self):
         while True:

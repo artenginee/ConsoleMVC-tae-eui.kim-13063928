@@ -1,12 +1,12 @@
-from controllers.order_controller import OrderController
-from controllers.sample_controller import SampleController
+from interfaces.i_order_controller import IOrderController
+from interfaces.i_sample_controller import ISampleController
 from models.order_status import OrderStatus
 
 
 class OrderView:
     """주문담당자 화면: 시료 주문 / 모니터링 / 출고 처리"""
 
-    def __init__(self, sample_ctrl: SampleController, order_ctrl: OrderController):
+    def __init__(self, sample_ctrl: ISampleController, order_ctrl: IOrderController):
         self._sc = sample_ctrl
         self._oc = order_ctrl
 
@@ -24,8 +24,6 @@ class OrderView:
             elif choice == "3": self._release_menu()
             elif choice == "0": break
 
-    # ── 1. 시료 주문 ───────────────────────────────────────────────────
-
     def _order_menu(self):
         while True:
             print("\n[ 시료 주문 ]")
@@ -37,8 +35,6 @@ class OrderView:
             if   choice == "1": self._oc.create(input("시료 ID: "), input("고객명: "), int(input("수량: ")))
             elif choice == "2": self._sc.get_all()
             elif choice == "0": break
-
-    # ── 2. 모니터링 ────────────────────────────────────────────────────
 
     def _monitoring_menu(self):
         while True:
@@ -54,8 +50,6 @@ class OrderView:
                     self._oc.get_by_status(status)
             elif choice == "2": self._sc.get_all()
             elif choice == "0": break
-
-    # ── 3. 출고 처리 ───────────────────────────────────────────────────
 
     def _release_menu(self):
         while True:

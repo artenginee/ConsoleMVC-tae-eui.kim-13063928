@@ -10,7 +10,9 @@
       "Bash(git commit *)",
       "Bash(git remote *)",
       "Bash(git branch *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python -m unittest tests.test_models -v)",
+      "Bash(python -m unittest tests.test_controllers.TestInterfaces -v)"
     ]
   }
 }
